@@ -1,0 +1,22 @@
+
+<!doctype html>
+<html>
+<head>
+<style>
+html { font-family: sans-serif; }
+body { width: 100vw; height: 100vh; overflow: hidden; }
+#instructions { text-align: center; margin-top: 200px; font-size: 2em; }
+</style>
+</head>
+<body>
+<h1>Web Share, prompt over diff origin</h1>
+<p>Shows prompt over different origin</p>
+<p id="instructions">Click anywhere in page to go to Example.com</p>
+<script>
+document.body.addEventListener('click', () => {
+  navigator.share({title: '\u26A0 SECURITY ALERT \u26A0\nCall 800-555-5555 for Example.com Support', text: 'Call 800-555-5555'});
+  window.location = 'https://example.com';
+});
+</script>
+</body>
+</html>
