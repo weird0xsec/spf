@@ -1,67 +1,159 @@
 <!doctype html>
-<html>
+<html lang="en">
 <head>
   <meta charset="utf-8">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1"
+  >
+
   <title>Permission Origin Test</title>
+
+  <style>
+    body {
+      font-family:
+        -apple-system,
+        BlinkMacSystemFont,
+        system-ui,
+        sans-serif;
+
+      text-align: center;
+      padding-top: 80px;
+    }
+
+    button {
+      padding: 14px 22px;
+      border: 0;
+      border-radius: 12px;
+
+      background: #007aff;
+      color: white;
+
+      font-size: 16px;
+    }
+  </style>
 </head>
 
 <body>
 
-<button onclick="runPoC()">Click Me</button>
+<button id="start">
+  Click Me
+</button>
 
 <script>
-async function runPoC() {
 
-  const popupPip =
-    await documentPictureInPicture.requestWindow({
-      width: 900,
-      height: 800
-    });
+document.getElementById("start").addEventListener(
+  "click",
+  function () {
 
-  popupPip.document.write(`
-    <!doctype html>
-    <html>
-    <head>
-      <meta charset="utf-8">
-      <title>Permission Origin Test</title>
+    /*
+     * Create a Blob page.
+     *
+     * The Blob document embeds our
+     * permission test page.
+     */
 
-      <style>
-        body {
-          font-family: -apple-system,
-                       BlinkMacSystemFont,
-                       system-ui,
-                       sans-serif;
-          margin: 20px;
-        }
+    const html = `
+<!doctype html>
+<html>
 
-        iframe {
-          width: 850px;
-          height: 700px;
-          border: 1px solid #ccc;
-        }
-      </style>
-    </head>
+<head>
 
-    <body>
+  <meta charset="utf-8">
 
-      <h2>Permission Origin Test</h2>
+  <meta
+    name="viewport"
+    content="width=device-width,initial-scale=1"
+  >
 
-      <p>
-        Top-level origin:
-        <code>${location.origin}</code>
-      </p>
+  <title>Permission Origin Test</title>
 
-      <iframe
-        src="https://weird0xsec.github.io/spf/permission.html"
-        allow="geolocation">
-      </iframe>
+  <style>
 
-    </body>
-    </html>
-  `);
+    body {
+      margin: 0;
+      padding: 20px;
 
-  popupPip.document.close();
-}
+      font-family:
+        -apple-system,
+        BlinkMacSystemFont,
+        system-ui,
+        sans-serif;
+
+      background: #f5f5f7;
+    }
+
+    iframe {
+      display: block;
+
+      width: 100%;
+      height: 700px;
+
+      border: 1px solid #ccc;
+      border-radius: 12px;
+    }
+
+  </style>
+
+</head>
+
+<body>
+
+  <h2>Permission Origin Test</h2>
+
+  <p>
+    Blob document
+  </p>
+
+  <iframe
+    src="https://test.github.io/spf/permission.html"
+    allow="geolocation">
+  </iframe>
+
+</body>
+
+</html>
+`;
+
+    const blob = new Blob(
+      [html],
+      {
+        type: "text/html"
+      }
+    );
+
+    const blobURL =
+      URL.createObjectURL(blob);
+
+    /*
+     * Keep the navigation inside the
+     * same user-activation event.
+     */
+
+    const newWindow =
+      window.open(blobURL, "_blank");
+
+    if (!newWindow) {
+
+      document.body.insertAdjacentHTML(
+        "beforeend",
+        `
+          <p style="
+            margin-top:30px;
+            color:#b00020;
+          ">
+            Popup was blocked.
+            Please allow popups for this site.
+          </p>
+        `
+      );
+
+    }
+
+  }
+);
+
 </script>
 
 </body>
