@@ -1,0 +1,30 @@
+<html>
+
+<head>
+    <title>Full-screen Auth Prompt</title>
+</head>
+
+<body>
+    <script>
+        (() => {
+            const button = document.createElement('button');
+            button.innerText = 'Click Me';
+
+            button.addEventListener('click', async () => {
+                button.style.display = 'none';
+                await document.body.requestFullscreen();
+
+                const iframe = document.createElement('iframe');
+                iframe.src = 'auth';
+                iframe.addEventListener('load', () => {
+                    iframe.contentWindow.location.reload(true);
+                });
+                document.body.appendChild(iframe);
+            });
+
+            document.body.appendChild(button);
+        })()
+    </script>
+</body>
+
+</html>
