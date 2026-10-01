@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width,
+             initial-scale=1.0,
+             maximum-scale=1.0,
+             user-scalable=no">
+
+    <title>Comet Omnibox PoC</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        html,
+        body {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            min-height: 100%;
+        }
+
+        body {
+            font-family:
+                Roboto,
+                -apple-system,
+                BlinkMacSystemFont,
+                "Segoe UI",
+                sans-serif;
+
+            background: #f5f5f5;
+            color: #111;
+
+            min-height: 200vh;
+            padding: 20px;
+        }
+
+        h2 {
+            margin-top: 10px;
+        }
+
+        button,
+        textarea {
+            width: 100%;
+            font-size: 16px;
+            border-radius: 8px;
+            border: 1px solid #ccc;
+        }
+
+        button {
+            padding: 12px;
+            margin-bottom: 20px;
+
+            cursor: pointer;
+
+            background: #007bff;
+            color: white;
+
+            border: none;
+            font-weight: bold;
+        }
+
+        textarea {
+            padding: 10px;
+            height: 100px;
+            margin-bottom: 20px;
+            resize: none;
+        }
+
+
+        /* =====================================================
+       COMET-LIKE OMNIBOX
+       ===================================================== */
+
+        .fake-omnibox-wrapper {
+            position: fixed;
+
+            left: 0;
+            width: 100%;
+
+            bottom: 0;
+
+            z-index: 99999;
+
+            padding: 0 32px;
+
+            opacity: 0;
+            visibility: hidden;
+
+            pointer-events: none;
+
+            transition:
+                opacity 0.15s ease,
+                bottom 0.08s linear;
+        }
+
+
+        .fake-omnibox-wrapper.show {
+            opacity: 1;
+            visibility: visible;
+            pointer-events: auto;
+        }
+
+
+        /*
+     * Main Comet-style pill
+     */
+        .comet-omnibox {
+
+            width: 100%;
+            height: 122px;
+
+            background: #1c1c1b;
+
+            border-radius: 62px;
+
+            display: flex;
+            align-items: center;
+
+            padding: 0 28px;
+
+            position: relative;
+
+            box-shadow:
+                0 0 0 1px rgba(255, 255, 255, 0.08),
+                0 8px 30px rgba(0, 0, 0, 0.45);
+
+        }
+
+
+        /* =====================================================
+       LEFT THREE-DOT MENU
+       ===================================================== */
+
+        .menu-button {
+
+            width: 42px;
+            height: 64px;
+
+            display: flex;
+            flex-direction: column;
+
+            justify-content: center;
+            align-items: center;
+
+            gap: 7px;
+
+            flex-shrink: 0;
+
+            margin-right: 20px;
+        }
+
+
+        .menu-dot {
+
+            width: 9px;
+            height: 9px;
+
+            background: #eeeeee;
+
+            border-radius: 50%;
+
+            opacity: 0.9;
+        }
+
+
+        /* =====================================================
+       DOMAIN
+       ===================================================== */
+
+        .omnibox-url {
+
+            flex: 1;
+
+            min-width: 0;
+
+            color: #eeeeee;
+
+            font-size: 31px;
+
+            font-weight: 400;
+
+            text-align: center;
+
+            white-space: nowrap;
+
+            overflow: hidden;
+
+            text-overflow: ellipsis;
+
+            letter-spacing: -0.4px;
+
+            user-select: none;
+        }
+
+
+        /* =====================================================
+       REFRESH ICON
+       ===================================================== */
+
+        .refresh-button {
+
+            width: 52px;
+            height: 64px;
+
+            display: flex;
+
+            align-items: center;
+            justify-content: center;
+
+            flex-shrink: 0;
+
+            margin-left: 20px;
+        }
+
+
+        .refresh-icon {
+
+            width: 44px;
+            height: 44px;
+
+            color: #eeeeee;
+
+            opacity: 0.95;
+        }
+
+
+        /* =====================================================
+       PAGE CONTENT
+       ===================================================== */
+
+        .spacer {
+            height: 100vh;
+        }
+
+        .bottom-anchor {
+
+            height: 100px;
+
+            text-align: center;
+
+            padding: 20px;
+
+            background: #ddd;
+        }
+
+
+        /* =====================================================
+       MOBILE ADJUSTMENT
+       ===================================================== */
+
+        @media (max-width: 600px) {
+
+            .fake-omnibox-wrapper {
+                padding: 0 32px;
+            }
+
+            .comet-omnibox {
+                height: 122px;
+                border-radius: 61px;
+                padding: 0 25px;
+            }
+
+            .omnibox-url {
+                font-size: 27px;
+            }
+
+            .menu-button {
+                margin-right: 12px;
+            }
+
+            .refresh-button {
+                margin-left: 12px;
+            }
+
+            .refresh-icon {
+                width: 40px;
+                height: 40px;
+            }
+        }
+
+
+        /* Smaller mobile screens */
+
+        @media (max-width: 390px) {
+
+            .fake-omnibox-wrapper {
+                padding: 0 18px;
+            }
+
+            .comet-omnibox {
+                padding: 0 18px;
+            }
+
+            .omnibox-url {
+                font-size: 21px;
+            }
+
+            .menu-button {
+                margin-right: 8px;
+            }
+
+            .refresh-button {
+                margin-left: 8px;
+            }
+        }
+    </style>
+</head>
+
+
+<body>
+
+    <h2>Comet Omnibox PoC</h2>
+
+    <p>
+        Tap the button or textarea to display the
+        Comet-like omnibox above the virtual keyboard.
+    </p>
+
+
+    <button id="showBtn">
+        Go to perplxity.ai
+    </button>
+
+
+    <textarea id="ta" placeholder="Tap here..."></textarea>
+
+
+    <!-- =====================================================
+       FAKE COMET OMNIBOX
+       ===================================================== -->
+
+    <div class="fake-omnibox-wrapper" id="fakeOmnibox">
+
+        <div class="comet-omnibox">
+
+
+            <!-- LEFT MENU -->
+
+            <div class="menu-button">
+
+                <span class="menu-dot"></span>
+                <span class="menu-dot"></span>
+                <span class="menu-dot"></span>
+
+            </div>
+
+
+            <!-- DOMAIN -->
+
+            <div class="omnibox-url">
+                perplexity.ai
+            </div>
+
+
+            <!-- REFRESH -->
+
+            <div class="refresh-button">
+
+                <svg class="refresh-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                    stroke-linecap="round" stroke-linejoin="round">
+
+                    <path d="M21 12a9 9 0 1 1-2.64-6.36" />
+
+                    <path d="M21 3v6h-6" />
+
+                </svg>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <div class="spacer"></div>
+
+
+    <div class="bottom-anchor">
+        Bottom of page
+    </div>
+
+
+    <script>
+
+        const fakeOmnibox =
+            document.getElementById("fakeOmnibox");
+
+        const textarea =
+            document.getElementById("ta");
+
+
+        /*
+         * Position the fake omnibox directly
+         * above the Android virtual keyboard.
+         */
+
+        function adjustOmnibox() {
+
+            const vv = window.visualViewport;
+
+            if (!vv) {
+                return;
+            }
+
+
+            const keyboardHeight =
+                window.innerHeight
+                - vv.height
+                - vv.offsetTop;
+
+
+            fakeOmnibox.style.bottom =
+                (keyboardHeight > 0
+                    ? keyboardHeight
+                    : 0
+                ) + "px";
+        }
+
+
+        function showOmnibox() {
+
+            fakeOmnibox.classList.add("show");
+
+            adjustOmnibox();
+        }
+
+
+        function hideOmnibox() {
+
+            fakeOmnibox.classList.remove("show");
+
+            fakeOmnibox.style.bottom = "0px";
+        }
+
+
+        /*
+         * Monitor Android visual viewport changes.
+         */
+
+        if ("visualViewport" in window) {
+
+            window.visualViewport.addEventListener(
+                "resize",
+                adjustOmnibox
+            );
+
+            window.visualViewport.addEventListener(
+                "scroll",
+                adjustOmnibox
+            );
+
+        }
+
+
+        /*
+         * Button -> focus textarea -> keyboard
+         */
+
+        document
+            .getElementById("showBtn")
+            .addEventListener("click", () => {
+
+                textarea.focus();
+
+                showOmnibox();
+
+            });
+
+
+        /*
+         * Direct textarea interaction
+         */
+
+        textarea.addEventListener(
+            "focus",
+            showOmnibox
+        );
+
+
+        textarea.addEventListener(
+            "blur",
+            hideOmnibox
+        );
+
+
+    </script>
+
+</body>
+
+</html>
