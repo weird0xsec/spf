@@ -7,7 +7,7 @@
 
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 
-    <title>Comet Browser Android Spoof Bar PoC</title>
+    <title>PoC - Comet Browser Android Bottom Address Bar Spoofing</title>
 
     <style>
         body {
@@ -19,6 +19,7 @@
             height: 200vh;
         }
 
+
         button,
         textarea {
             font-size: 16px;
@@ -27,6 +28,7 @@
             border-radius: 8px;
             border: 1px solid #ccc;
         }
+
 
         button {
             padding: 12px;
@@ -38,6 +40,7 @@
             font-weight: bold;
         }
 
+
         textarea {
             padding: 10px;
             height: 100px;
@@ -46,25 +49,29 @@
 
 
         /* =====================================================
-       COMET-LIKE OMNIBOX
+       OUTER COMET TOOLBAR
        ===================================================== */
 
         .fake-bar-wrapper {
 
             position: fixed;
 
-            width: 100%;
             left: 0;
+            width: 100%;
 
             z-index: 9999;
 
-            background-color: #1c1c1b;
+            /*
+       * Layer paling luar.
+       * Full width dan hampir hitam seperti screenshot.
+       */
+            background-color: #111111;
 
             /*
-       * Full width seperti browser toolbar.
-       * Tidak dibuat seperti pill.
+       * Jarak antara outer toolbar dengan
+       * rounded omnibox di dalamnya.
        */
-            padding: 7px 32px;
+            padding: 5px 32px;
 
             box-sizing: border-box;
 
@@ -83,7 +90,7 @@
             border-radius: 0;
 
             box-shadow:
-                0 -2px 10px rgba(0, 0, 0, 0.3);
+                0 -2px 8px rgba(0, 0, 0, 0.35);
         }
 
 
@@ -98,59 +105,83 @@
 
 
         /* =====================================================
-       MAIN OMNIBOX
+       INNER OMNIBOX
        ===================================================== */
 
         .comet-omnibox {
 
             width: 100%;
-            height: 58px;
 
-            background-color: #1c1c1b;
+            /*
+       * Sengaja dibuat jauh lebih pendek.
+       */
+            height: 48px;
+
+            /*
+       * Warna inner bar sedikit lebih terang
+       * daripada background luar.
+       */
+            background-color: #1d1d1c;
+
+            /*
+       * Bentuk rounded seperti screenshot.
+       */
+            border-radius: 26px;
 
             display: flex;
+
             align-items: center;
 
-            padding: 0;
+            padding: 0 16px;
 
             box-sizing: border-box;
+
+            /*
+       * Border sangat tipis untuk memberikan
+       * efek outline seperti screenshot.
+       */
+            border: 1px solid rgba(255, 255, 255, 0.10);
+
+            box-shadow:
+                inset 0 1px 1px rgba(255, 255, 255, 0.025);
         }
 
 
         /* =====================================================
-       THREE DOT MENU
+       THREE DOTS
        ===================================================== */
 
         .menu-button {
 
-            width: 34px;
-            height: 58px;
+            width: 24px;
+            height: 40px;
 
             display: flex;
 
             flex-direction: column;
 
             justify-content: center;
+
             align-items: center;
 
-            gap: 5px;
+            gap: 4px;
 
             flex-shrink: 0;
 
-            margin-right: 12px;
+            margin-right: 10px;
         }
 
 
         .menu-dot {
 
-            width: 6px;
-            height: 6px;
+            width: 5px;
+            height: 5px;
 
             background-color: #eeeeee;
 
             border-radius: 50%;
 
-            opacity: 0.95;
+            opacity: 0.9;
         }
 
 
@@ -166,7 +197,11 @@
 
             color: #eeeeee;
 
-            font-size: 17px;
+            /*
+       * Ukuran dibuat seperti screenshot,
+       * tidak terlalu besar.
+       */
+            font-size: 16px;
 
             font-weight: 400;
 
@@ -183,29 +218,30 @@
 
 
         /* =====================================================
-       REFRESH BUTTON
+       REFRESH
        ===================================================== */
 
         .refresh-button {
 
-            width: 40px;
-            height: 58px;
+            width: 30px;
+            height: 40px;
 
             display: flex;
 
             align-items: center;
+
             justify-content: center;
 
             flex-shrink: 0;
 
-            margin-left: 12px;
+            margin-left: 10px;
         }
 
 
         .refresh-icon {
 
-            width: 27px;
-            height: 27px;
+            width: 25px;
+            height: 25px;
 
             color: #eeeeee;
 
@@ -231,6 +267,43 @@
             padding: 20px;
 
             background: #ddd;
+        }
+
+
+        /* =====================================================
+       SMALL SCREEN
+       ===================================================== */
+
+        @media (max-width: 390px) {
+
+            .fake-bar-wrapper {
+                padding-left: 12px;
+                padding-right: 12px;
+            }
+
+
+            .comet-omnibox {
+                height: 46px;
+                padding-left: 14px;
+                padding-right: 14px;
+            }
+
+
+            .omnibox-url,
+            .url-text {
+                font-size: 15px;
+            }
+
+
+            .menu-button {
+                margin-right: 7px;
+            }
+
+
+            .refresh-button {
+                margin-left: 7px;
+            }
+
         }
     </style>
 
@@ -271,7 +344,9 @@
             <div class="menu-button">
 
                 <span class="menu-dot"></span>
+
                 <span class="menu-dot"></span>
+
                 <span class="menu-dot"></span>
 
             </div>
