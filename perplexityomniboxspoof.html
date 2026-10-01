@@ -45,14 +45,12 @@
             padding: 10px;
             height: 100px;
             margin-bottom: 20px;
+            resize: none;
         }
 
 
-        /* =====================================================
-       OUTER COMET TOOLBAR
-       ===================================================== */
-
         .fake-bar-wrapper {
+
             position: fixed;
 
             left: 0;
@@ -62,7 +60,6 @@
 
             background-color: #111111;
 
-            /* Jarak atas dan bawah dibuat lebih lega */
             padding: 9px 32px;
 
             box-sizing: border-box;
@@ -87,16 +84,19 @@
 
 
         .fake-bar-wrapper.show {
+
             opacity: 1;
             visibility: visible;
+
             pointer-events: auto;
+
         }
 
 
         .comet-omnibox {
+
             width: 100%;
 
-            /* Sedikit lebih tipis */
             height: 44px;
 
             background-color: #1d1d1c;
@@ -104,6 +104,7 @@
             border-radius: 24px;
 
             display: flex;
+
             align-items: center;
 
             padding: 0 15px;
@@ -116,10 +117,6 @@
                 inset 0 1px 1px rgba(255, 255, 255, 0.025);
         }
 
-
-        /* =====================================================
-       THREE DOTS
-       ===================================================== */
 
         .menu-button {
 
@@ -155,10 +152,6 @@
         }
 
 
-        /* =====================================================
-       URL
-       ===================================================== */
-
         .url-text {
 
             flex: 1;
@@ -167,10 +160,6 @@
 
             color: #eeeeee;
 
-            /*
-       * Ukuran dibuat seperti screenshot,
-       * tidak terlalu besar.
-       */
             font-size: 16px;
 
             font-weight: 400;
@@ -186,10 +175,6 @@
             letter-spacing: 0;
         }
 
-
-        /* =====================================================
-       REFRESH
-       ===================================================== */
 
         .refresh-button {
 
@@ -219,10 +204,6 @@
         }
 
 
-        /* =====================================================
-       PAGE
-       ===================================================== */
-
         .spacer {
             height: 100vh;
         }
@@ -239,39 +220,44 @@
             background: #ddd;
         }
 
-
-        /* =====================================================
-       SMALL SCREEN
-       ===================================================== */
-
         @media (max-width: 390px) {
 
             .fake-bar-wrapper {
+
                 padding-left: 12px;
                 padding-right: 12px;
+
             }
 
 
             .comet-omnibox {
-                height: 46px;
+
+                height: 44px;
+
                 padding-left: 14px;
                 padding-right: 14px;
+
             }
 
 
-            .omnibox-url,
             .url-text {
+
                 font-size: 15px;
+
             }
 
 
             .menu-button {
+
                 margin-right: 7px;
+
             }
 
 
             .refresh-button {
+
                 margin-left: 7px;
+
             }
 
         }
@@ -298,11 +284,6 @@
 
 
     <textarea id="ta" placeholder="Tap here..."></textarea>
-
-
-    <!-- =====================================================
-       FAKE COMET OMNIBOX
-       ===================================================== -->
 
     <div class="fake-bar-wrapper" id="fakeBar">
 
