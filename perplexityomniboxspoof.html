@@ -53,7 +53,6 @@
        ===================================================== */
 
         .fake-bar-wrapper {
-
             position: fixed;
 
             left: 0;
@@ -61,17 +60,10 @@
 
             z-index: 9999;
 
-            /*
-       * Layer paling luar.
-       * Full width dan hampir hitam seperti screenshot.
-       */
             background-color: #111111;
 
-            /*
-       * Jarak antara outer toolbar dengan
-       * rounded omnibox di dalamnya.
-       */
-            padding: 5px 32px;
+            /* Jarak atas dan bawah dibuat lebih lega */
+            padding: 9px 32px;
 
             box-sizing: border-box;
 
@@ -95,51 +87,29 @@
 
 
         .fake-bar-wrapper.show {
-
             opacity: 1;
             visibility: visible;
-
             pointer-events: auto;
-
         }
 
 
-        /* =====================================================
-       INNER OMNIBOX
-       ===================================================== */
-
         .comet-omnibox {
-
             width: 100%;
 
-            /*
-       * Sengaja dibuat jauh lebih pendek.
-       */
-            height: 48px;
+            /* Sedikit lebih tipis */
+            height: 44px;
 
-            /*
-       * Warna inner bar sedikit lebih terang
-       * daripada background luar.
-       */
             background-color: #1d1d1c;
 
-            /*
-       * Bentuk rounded seperti screenshot.
-       */
-            border-radius: 26px;
+            border-radius: 24px;
 
             display: flex;
-
             align-items: center;
 
-            padding: 0 16px;
+            padding: 0 15px;
 
             box-sizing: border-box;
 
-            /*
-       * Border sangat tipis untuk memberikan
-       * efek outline seperti screenshot.
-       */
             border: 1px solid rgba(255, 255, 255, 0.10);
 
             box-shadow:
